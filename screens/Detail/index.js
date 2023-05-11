@@ -60,7 +60,7 @@ export default function DetailScreen({ route, navigation }) {
   const renderPage = (rowData) => {
     const item = rowData.item;
     return (
-      <VStack space={1} mt={2}>
+      <VStack key={rowData.index} space={1} mt={2}>
         <Text fontWeight={400}>Step {rowData.index + 1}</Text>
         <Text color={COLOR.darkGray} fontSize="xs">
           {item}
@@ -87,14 +87,13 @@ export default function DetailScreen({ route, navigation }) {
     );
     if (response.status === 200) {
       const res_data = response.data.data.attributes;
-      console.log("res_data", res_data);
       setFoodData({
         ...res_data,
         image: res_data.image.data.attributes.url,
         material: res_data.material.data,
       });
     }
-  }, []);
+  }, [foodId]);
 
   useEffect(() => {
     load();
@@ -192,6 +191,7 @@ export default function DetailScreen({ route, navigation }) {
               renderItem={renderPage}
               onViewableItemsChanged={onViewableItemsChanged}
               viewabilityConfig={viewabilityConfig}
+              keyExtractor={(item, index) => index.toString()}
             />
           </Box>
         </Box>

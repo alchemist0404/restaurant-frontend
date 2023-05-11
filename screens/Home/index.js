@@ -27,13 +27,14 @@ export default function HomeScreen({ navigation }) {
     const response = await axiosInstance.get("categories?populate=*");
     if (response.status === 200) {
       setCategories(response.data.data);
-      setActiveCategory(response.data.data[0].id);
+      setActiveCategory(response.data.data[0]);
     }
   }, []);
 
   const loadFoods = useCallback(async () => {
+    if (!activeCategory) return;
     const response = await axiosInstance.get(
-      `restaurants?filters[category][id][$eq]=${activeCategory}&populate[0]=category&populate=image`
+      `restaurants?filters[category][id][$eq]=${activeCategory.id}&populate[0]=category&populate=image`
     );
     if (response.status === 200) {
       setFoods(response.data.data);
@@ -45,10 +46,8 @@ export default function HomeScreen({ navigation }) {
   }, [load]);
 
   useEffect(() => {
-    if (activeCategory) {
-      loadFoods();
-    }
-  }, [activeCategory]);
+    loadFoods();
+  }, [loadFoods]);
 
   return (
     <Box style={styles.container}>
@@ -70,14 +69,15 @@ export default function HomeScreen({ navigation }) {
           showsHorizontalScrollIndicator={false}
         >
           <HStack space={2}>
-            {categories.map((item, idx) => (
-              <Tab
-                key={idx}
-                props={item}
-                activeCategory={activeCategory}
-                setActiveCategory={setActiveCategory}
-              />
-            ))}
+            {activeCategory &&
+              categories.map((item, idx) => (
+                <Tab
+                  key={idx}
+                  props={item}
+                  activeCategory={activeCategory}
+                  setActiveCategory={setActiveCategory}
+                />
+              ))}
           </HStack>
         </ScrollView>
       </HStack>
@@ -87,7 +87,9 @@ export default function HomeScreen({ navigation }) {
         marginBottom={4}
       >
         <Text fontWeight={700} fontSize="xl">
-          300 Popular
+          {`${foods.length} ${
+            activeCategory && activeCategory.attributes.Name
+          }`}
         </Text>
         <TouchableOpacity>
           <Icon

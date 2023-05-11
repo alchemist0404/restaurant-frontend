@@ -14,10 +14,10 @@ export default function Tab({ props, activeCategory, setActiveCategory }) {
         styles.button,
         {
           borderColor:
-            activeCategory === props.id ? COLOR.warning : COLOR.borderColor,
+            activeCategory.id === props.id ? COLOR.warning : COLOR.borderColor,
         },
       ]}
-      onPress={() => setActiveCategory(props.id)}
+      onPress={() => setActiveCategory(props)}
     >
       <Center flexDirection="row">
         <Image
@@ -29,7 +29,7 @@ export default function Tab({ props, activeCategory, setActiveCategory }) {
         />
         <Text
           color={
-            activeCategory === props.id ? COLOR.warning : COLOR.whiteColor
+            activeCategory.id === props.id ? COLOR.warning : COLOR.whiteColor
           }
         >
           {data.Name}
